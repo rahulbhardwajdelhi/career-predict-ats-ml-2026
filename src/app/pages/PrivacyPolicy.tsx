@@ -6,7 +6,7 @@ const PrivacyPolicy: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       <div className="prose dark:prose-invert">
         <p className="mb-4">
-          Your privacy is important to us. It is Career Predict's policy to respect your privacy regarding
+          Your privacy is important to us. It is IIIT Bhopal Resume Analyzer's policy to respect your privacy regarding
           any information we may collect from you across our website.
         </p>
         <h2 className="text-2xl font-semibold mt-6 mb-4">Information We Collect</h2>

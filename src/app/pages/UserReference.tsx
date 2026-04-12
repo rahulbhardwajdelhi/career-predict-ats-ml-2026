@@ -7,7 +7,7 @@ const UserReference: React.FC = () => {
       <div className="prose dark:prose-invert">
         <h2 className="text-2xl font-semibold mt-6 mb-4">Getting Started</h2>
         <p className="mb-4">
-          Welcome to Career Predict! This guide will help you make the most of our platform.
+          Welcome to IIIT Bhopal Resume Analyzer! This guide will help you make the most of our platform.
         </p>
         
         <h3 className="text-xl font-semibold mt-6 mb-3">1. Upload Your Resume</h3>
@@ -24,7 +24,7 @@ const UserReference: React.FC = () => {
           <li>List your skills (comma-separated)</li>
         </ul>
 
-        <h3 className="text-xl font-semibold mt-6 mb-3">3. Get Career Predictions</h3>
+        <h3 className="text-xl font-semibold mt-6 mb-3">3. Get IIIT Bhopal Resume Analyzerions</h3>
         <ul className="list-disc pl-6 mb-4">
           <li>Review your resume preview</li>
           <li>Submit for career analysis</li>

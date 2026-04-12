@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Home: React.FC = () => {
   return (
     <div className="text-center">
-      <h1 className="text-4xl font-bold mb-8">Welcome to Career Predict</h1>
+      <h1 className="text-4xl font-bold mb-8">Welcome to IIIT Bhopal Resume Analyzer</h1>
       <p className="text-xl mb-8">
         Upload your resume and get personalized career predictions
       </p>

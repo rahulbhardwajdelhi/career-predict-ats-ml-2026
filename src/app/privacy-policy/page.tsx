@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Introduction</h2>
           <p className="text-gray-600 dark:text-gray-300">
-            CareerPredict ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our career guidance platform.
+            IIIT Bhopal Resume Analyzer ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our career guidance platform.
           </p>
         </section>
 
@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Contact Us</h2>
           <p className="text-gray-600 dark:text-gray-300">
-            If you have any questions about this Privacy Policy, please contact us at privacy@careerpredict.com
+            If you have any questions about this Privacy Policy, please contact us at privacy@iiitbhopalresumeanalyzer.com
           </p>
         </section>
       </div>

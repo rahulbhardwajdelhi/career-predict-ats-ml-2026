@@ -8,10 +8,11 @@ import { extractResumeFromSections } from "lib/parse-resume-from-pdf/extract-res
 import { ResumeDropzone } from "../components/ResumeDropzone";
 import { ResumeTable } from "./ResumeTable";
 import { ParsedForm } from "./ParsedForm";
+import { AtsCheckerModal } from "../components/AtsCheckerModal";
 import type { Resume } from "lib/redux/types";
 import { initialResumeState } from "lib/redux/resumeSlice";
 import { processSkillsFromDescriptions } from "lib/parse-resume-from-pdf/extract-resume-from-sections/extract-skills";
-import { TableCellsIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import { TableCellsIcon, DocumentTextIcon, ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 
 export default function ResumeParser() {
   const [fileUrl, setFileUrl] = useState<string>("");
@@ -19,6 +20,7 @@ export default function ResumeParser() {
   const [resume, setResume] = useState<Resume>(initialResumeState);
   const [activeTab, setActiveTab] = useState("table");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAtsModalOpen, setIsAtsModalOpen] = useState(false);
 
   // Check local storage for resume on initial load
   useEffect(() => {
@@ -108,12 +110,21 @@ export default function ResumeParser() {
 
       {resume && (
         <div className="animate-fade-in">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4 gap-3 flex-wrap">
             <h2 className="text-2xl font-semibold text-blue-violet-700 dark:text-blue-violet-300">
               Resume Parsing Results
             </h2>
-            
-            <div className="inline-flex rounded-md shadow-sm" role="group">
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                className="btn-secondary inline-flex items-center"
+                onClick={() => setIsAtsModalOpen(true)}
+              >
+                <ClipboardDocumentCheckIcon className="w-4 h-4 mr-2" />
+                ATS Score & Insights
+              </button>
+
+              <div className="inline-flex rounded-md shadow-sm" role="group">
               <button
                 className={`flex items-center px-4 py-2 text-sm font-medium rounded-l-lg ${
                   activeTab === 'table'
@@ -136,6 +147,7 @@ export default function ResumeParser() {
                 <DocumentTextIcon className="w-4 h-4 mr-2" />
                 Form View
               </button>
+              </div>
             </div>
           </div>
           
@@ -146,6 +158,12 @@ export default function ResumeParser() {
               <ParsedForm resume={resume} updateResume={updateResume} />
             )}
           </div>
+
+          <AtsCheckerModal
+            isOpen={isAtsModalOpen}
+            onClose={() => setIsAtsModalOpen(false)}
+            resume={resume}
+          />
         </div>
       )}
     </div>

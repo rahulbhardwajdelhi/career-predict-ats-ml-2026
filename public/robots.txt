@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://career-predict.com/sitemap.xml 
+Sitemap: https://iiit-bhopal-resume-analyzer.com/sitemap.xml 

@@ -72,7 +72,7 @@ export const Navbar = () => {
                 <path d="M3 14L12 19L21 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">CareerPredict</span>
+            <span className="font-bold text-xl text-gray-900 dark:text-white">IIIT Bhopal Resume Analyzer</span>
           </a>
 
           {/* Navigation Links */}

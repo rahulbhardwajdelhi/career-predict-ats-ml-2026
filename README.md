@@ -52,4 +52,25 @@ export default tseslint.config({
   },
 })
 ```
-# career-predict
+# iiit-bhopal-resume-analyzer
+
+## ATS Score Checker
+
+An ATS Score Checker is available in the Resume Parser form view.
+
+1. Upload your resume and open Resume Parser.
+2. Click ATS Score Checker.
+3. Paste the job description and click Run ATS Check.
+4. Review keyword gaps and improvement suggestions.
+5. (Optional) Click Get AI Rewrite Suggestions for summary and bullet rewrites.
+
+### AI Key Setup
+
+Add these variables in your local environment file:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+The API key is used server-side in the route handler at `src/app/api/ats-feedback/route.ts`.

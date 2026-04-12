@@ -9,7 +9,7 @@ import { Footer } from "./components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CareerPredict - AI Career Guidance",
+  title: "IIIT Bhopal Resume Analyzer - AI Career Guidance",
   description: "Predict your career path with AI-powered resume analysis and job matching",
   icons: {
     icon: "/CareerPredict.png",

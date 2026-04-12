@@ -335,37 +335,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Stats Section */}
-          <div className="w-full py-16 px-8">
-            <div className="max-w-6xl mx-auto ">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center transform transition-all duration-300 hover:scale-105 w-full">
-                  <div className="text-4xl font-bold text-blue-violet-600 dark:text-blue-violet-400 mb-3">95%</div>
-                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Success Rate</h3>
-                  <p className="text-base text-gray-600 dark:text-gray-400">
-                    Industry-leading success rate in optimizing resumes for ATS systems. Our AI ensures your resume meets both automated and human recruitment standards.
-                  </p>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center transform transition-all duration-300 hover:scale-105 w-full">
-                  <div className="text-4xl font-bold text-blue-violet-600 dark:text-blue-violet-400 mb-3">10K+</div>
-                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Job Matches</h3>
-                  <p className="text-base text-gray-600 dark:text-gray-400">
-                    Over 10,000 successful career placements and growing. Our AI matching system connects professionals with their perfect career opportunities.
-                  </p>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center transform transition-all duration-300 hover:scale-105 w-full">
-                  <div className="text-4xl font-bold text-blue-violet-600 dark:text-blue-violet-400 mb-3">24/7</div>
-                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">AI Support</h3>
-                  <p className="text-base text-gray-600 dark:text-gray-400">
-                    Always-on AI assistance for your career journey. Get instant resume feedback and job recommendations whenever you need them.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* How It Works Section */}
           <div className="w-full max-w-6xl mx-auto py-16 px-8">
             <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">

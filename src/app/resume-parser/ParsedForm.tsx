@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import type { Resume, ResumeEducation, ResumeWorkExperience, ResumeProject, ResumeCertification } from "lib/redux/types";
 import { deepClone } from "lib/deep-clone";
 import { initialEducation, initialWorkExperience, initialCertification } from "lib/redux/resumeSlice";
-import { PencilIcon, CheckIcon, XMarkIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, CheckIcon, XMarkIcon, QuestionMarkCircleIcon, ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 import { SkillsForm } from "./SkillsForm";
 import { JobListingsModal } from "../components/JobListingsModal";
+import { AtsCheckerModal } from "../components/AtsCheckerModal";
 import { useJobListings } from "../lib/hooks/useJobListings";
 
 const FormSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -409,6 +410,7 @@ interface ParsedFormProps {
 
 export const ParsedForm = ({ resume, updateResume }: ParsedFormProps) => {
   const { isModalOpen, openModal, closeModal } = useJobListings();
+  const [isAtsModalOpen, setIsAtsModalOpen] = useState(false);
   
   const educations =
     resume.educations.length === 0
@@ -662,7 +664,14 @@ export const ParsedForm = ({ resume, updateResume }: ParsedFormProps) => {
           ))}
         </FormSection>
         
-        <div className="flex justify-center mt-8 mb-4">
+        <div className="flex justify-center mt-8 mb-4 gap-3 flex-wrap">
+          <button
+            onClick={() => setIsAtsModalOpen(true)}
+            className="btn-secondary inline-flex items-center"
+          >
+            <span>ATS Score Checker</span>
+            <ClipboardDocumentCheckIcon className="h-5 w-5 ml-2" />
+          </button>
           <button
             onClick={openModal}
             className="btn-primary inline-flex items-center animate-pulse-subtle"
@@ -677,6 +686,12 @@ export const ParsedForm = ({ resume, updateResume }: ParsedFormProps) => {
         isOpen={isModalOpen} 
         onClose={closeModal} 
         resume={resume} 
+      />
+
+      <AtsCheckerModal
+        isOpen={isAtsModalOpen}
+        onClose={() => setIsAtsModalOpen(false)}
+        resume={resume}
       />
     </>
   );

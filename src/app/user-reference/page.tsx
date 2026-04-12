@@ -17,10 +17,10 @@ export default function UserReference() {
   
   const faqs: FAQItem[] = [
     {
-      question: 'How does CareerPredict help me find a job?',
+      question: 'How does IIIT Bhopal Resume Analyzer help me find a job?',
       answer: (
         <div className="space-y-2">
-          <p>CareerPredict uses advanced AI to analyze your resume and match it with job opportunities. The process works in three main steps:</p>
+          <p>IIIT Bhopal Resume Analyzer uses advanced AI to analyze your resume and match it with job opportunities. The process works in three main steps:</p>
           <ol className="list-decimal pl-5 space-y-1">
             <li>Upload your resume in PDF format</li>
             <li>Our AI parses your skills, experience, and education</li>
@@ -65,7 +65,7 @@ export default function UserReference() {
       question: 'How do I match my skills with job descriptions?',
       answer: (
         <div className="space-y-2">
-          <p>Matching your skills with job descriptions is crucial for success. Here's how CareerPredict helps you do this effectively:</p>
+          <p>Matching your skills with job descriptions is crucial for success. Here's how IIIT Bhopal Resume Analyzer helps you do this effectively:</p>
           <ol className="list-decimal pl-5 space-y-1">
             <li><strong>Skill extraction</strong> - We automatically identify skills from your resume</li>
             <li><strong>Keyword analysis</strong> - We analyze job descriptions for required skills and qualifications</li>
@@ -96,7 +96,7 @@ export default function UserReference() {
             <li><strong>Preparing for interviews</strong> - Research common questions and practice your responses</li>
             <li><strong>Following up</strong> - Send thank-you notes after interviews</li>
           </ul>
-          <p>CareerPredict can help you identify the skills and experiences to emphasize in your applications and interviews.</p>
+          <p>IIIT Bhopal Resume Analyzer can help you identify the skills and experiences to emphasize in your applications and interviews.</p>
         </div>
       ),
     },
@@ -107,14 +107,14 @@ export default function UserReference() {
       <div className="text-center mb-16 animate-fade-in">
         <h1 className="text-4xl font-bold text-blue-violet-700 dark:text-blue-violet-300 mb-6">User Reference Guide</h1>
         <p className="text-xl text-gray-600 dark:text-gray-400">
-          Learn how to maximize CareerPredict to boost your job search and career opportunities
+          Learn how to maximize IIIT Bhopal Resume Analyzer to boost your job search and career opportunities
         </p>
       </div>
 
       {/* How It Works Section */}
       <section className="mb-16 animate-slide-up">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-2">
-          How CareerPredict Works
+          How IIIT Bhopal Resume Analyzer Works
         </h2>
         
         <div className="grid md:grid-cols-3 gap-8 mt-8">
@@ -255,21 +255,6 @@ export default function UserReference() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-2">
-          Need More Help?
-        </h2>
-        
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700 text-center">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            If you have additional questions or need personalized assistance, our support team is here to help.
-          </p>
-          <button className="px-6 py-2 bg-blue-violet-600 hover:bg-blue-violet-700 text-white rounded-lg transition-colors duration-200">
-            Contact Support
-          </button>
-        </div>
-      </section>
     </div>
   );
 } 

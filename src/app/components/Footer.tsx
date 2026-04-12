@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export const Footer = () => {
@@ -30,7 +29,7 @@ export const Footer = () => {
                 <path d="M3 14L12 19L21 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">CareerPredict</span>
+            <span className="font-bold text-xl text-gray-900 dark:text-white">IIIT Bhopal Resume Analyzer</span>
           </a>
 
           {/* Description */}
@@ -43,31 +42,9 @@ export const Footer = () => {
             Unlock your potential with personalized job matches and placement predictions
           </p>
 
-          {/* Links */}
-          <div className="flex space-x-6 mb-8">
-            <Link 
-              href="/user-reference"
-              className="text-gray-600 dark:text-gray-400 hover:text-blue-violet-600 dark:hover:text-blue-violet-400 transition-colors duration-200"
-            >
-              User Reference
-            </Link>
-            <Link 
-              href="/privacy-policy"
-              className="text-gray-600 dark:text-gray-400 hover:text-blue-violet-600 dark:hover:text-blue-violet-400 transition-colors duration-200"
-            >
-              Privacy Policy
-            </Link>
-            <Link 
-              href="/terms-of-service"
-              className="text-gray-600 dark:text-gray-400 hover:text-blue-violet-600 dark:hover:text-blue-violet-400 transition-colors duration-200"
-            >
-              Terms of Service
-            </Link>
-          </div>
-
           {/* Copyright */}
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} CareerPredict. All rights reserved.
+            © {new Date().getFullYear()} IIIT Bhopal Resume Analyzer. All rights reserved.
           </p>
         </div>
       </div>
