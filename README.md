@@ -54,6 +54,8 @@ export default tseslint.config({
 ```
 # iiit-bhopal-resume-analyzer
 
+Last minor update: 2026-04-17
+
 ## ATS Score Checker
 
 An ATS Score Checker is available in the Resume Parser form view.
