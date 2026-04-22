@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import type { Resume } from "lib/redux/types";
-import { analyzeResumeForAts } from "lib/ats/score-resume";
 import type { AtsAiFeedback, AtsAnalysisResult } from "lib/ats/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -45,6 +44,7 @@ function toResumeSnapshot(resume: Resume): string {
 export const AtsCheckerModal = ({ isOpen, onClose, resume }: AtsCheckerModalProps) => {
   const [jobDescription, setJobDescription] = useState("");
   const [analysis, setAnalysis] = useState<AtsAnalysisResult | null>(null);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [loadingAi, setLoadingAi] = useState(false);
   const [aiFeedback, setAiFeedback] = useState<AtsAiFeedback | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -55,16 +55,56 @@ export const AtsCheckerModal = ({ isOpen, onClose, resume }: AtsCheckerModalProp
     return null;
   }
 
-  const runLocalAnalysis = () => {
+  const runLocalAnalysis = async () => {
     const trimmed = jobDescription.trim();
     if (!trimmed) {
       setError("Please paste a job description first.");
       return;
     }
 
+    setLoadingAnalysis(true);
     setError(null);
     setAiFeedback(null);
-    setAnalysis(analyzeResumeForAts(resume, trimmed));
+
+    try {
+      const response = await fetch("/api/ml/ats-score", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resume,
+          jobDescription: trimmed,
+        }),
+      });
+
+      const data = (await response.json()) as AtsAnalysisResult & { error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to compute ATS score.");
+      }
+
+      setAnalysis(data);
+
+      // Backup every ATS-checked resume in MongoDB under tester account by default.
+      await fetch("/api/resume-backups/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resume,
+          jobDescription: trimmed,
+          atsAnalysis: data,
+          accountRole: "tester",
+          accountId: "tester@career-predict.local",
+        }),
+      });
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoadingAnalysis(false);
+    }
   };
 
   const runAiFeedback = async () => {
@@ -129,8 +169,10 @@ export const AtsCheckerModal = ({ isOpen, onClose, resume }: AtsCheckerModalProp
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <button onClick={runLocalAnalysis} className="btn-primary">Run ATS Check</button>
-            <button onClick={runAiFeedback} className="btn-secondary" disabled={!analysis || loadingAi}>
+            <button onClick={runLocalAnalysis} className="btn-primary" disabled={loadingAnalysis}>
+              {loadingAnalysis ? "Running ATS Check..." : "Run ATS Check"}
+            </button>
+            <button onClick={runAiFeedback} className="btn-secondary" disabled={!analysis || loadingAi || loadingAnalysis}>
               {loadingAi ? "Generating AI Improvements..." : "Get AI Rewrite Suggestions"}
             </button>
           </div>
@@ -157,6 +199,23 @@ export const AtsCheckerModal = ({ isOpen, onClose, resume }: AtsCheckerModalProp
                   </div>
                 ))}
               </div>
+
+              {analysis.modelPrediction ? (
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-violet-700 dark:text-blue-violet-300 mb-2">Model Role Prediction</h3>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Predicted role: <span className="font-semibold">{analysis.modelPrediction.predictedRole}</span>
+                  </p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                    Confidence: <span className="font-semibold">{(analysis.modelPrediction.confidence * 100).toFixed(1)}%</span>
+                  </p>
+                  <ul className="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                    {analysis.modelPrediction.topProbabilities.map((item) => (
+                      <li key={item.role}>{item.role}: {(item.probability * 100).toFixed(1)}%</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
@@ -186,6 +245,17 @@ export const AtsCheckerModal = ({ isOpen, onClose, resume }: AtsCheckerModalProp
                   ))}
                 </ul>
               </div>
+
+              {analysis.missingSectionLines?.length ? (
+                <div className="border border-red-200 dark:border-red-700 rounded-lg p-4 bg-red-50/40 dark:bg-red-900/10">
+                  <h3 className="font-semibold text-red-700 dark:text-red-400 mb-2">Missing Sections / Weak Lines</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    {analysis.missingSectionLines.map((line, index) => (
+                      <li key={index}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
               {aiFeedback ? (
                 <div className="border border-blue-violet-200 dark:border-blue-violet-700 rounded-lg p-4 bg-blue-violet-50/50 dark:bg-blue-violet-900/10 space-y-3">

@@ -1,9 +1,11 @@
 import argparse
+import json
 import pickle
 from pathlib import Path
+import sys
 
 
-def predict_role(model_path: Path, resume_text: str) -> None:
+def predict_role(model_path: Path, resume_text: str, top_k: int = 3, json_output: bool = False) -> None:
     if not model_path.exists():
         raise FileNotFoundError(
             f"Model not found: {model_path}. Train first with ml/train_resume_role_model.py"
@@ -17,13 +19,27 @@ def predict_role(model_path: Path, resume_text: str) -> None:
     labels = model.classes_
 
     top_idx = probabilities.argmax()
-    confidence = probabilities[top_idx]
+    confidence = float(probabilities[top_idx])
+
+    if top_k < 1:
+        top_k = 1
+
+    ranked = sorted(zip(labels, probabilities), key=lambda x: x[1], reverse=True)[:top_k]
+
+    if json_output:
+        payload = {
+            "predicted_role": str(predicted_role),
+            "confidence": confidence,
+            "top_probabilities": [
+                {"role": str(role), "probability": float(prob)} for role, prob in ranked
+            ],
+        }
+        print(json.dumps(payload))
+        return
 
     print(f"Predicted role: {predicted_role}")
     print(f"Confidence: {confidence:.2%}")
-    print("\nTop 3 role probabilities:")
-
-    ranked = sorted(zip(labels, probabilities), key=lambda x: x[1], reverse=True)[:3]
+    print(f"\nTop {top_k} role probabilities:")
     for role, prob in ranked:
         print(f"- {role}: {prob:.2%}")
 
@@ -37,12 +53,35 @@ def main() -> None:
     )
     parser.add_argument(
         "--text",
-        required=True,
         help="Resume text to classify",
+    )
+    parser.add_argument(
+        "--text-stdin",
+        action="store_true",
+        help="Read resume text from standard input",
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=3,
+        help="Number of top role probabilities to print",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Return machine-readable JSON output",
     )
     args = parser.parse_args()
 
-    predict_role(Path(args.model), args.text)
+    if args.text_stdin:
+        resume_text = sys.stdin.read().strip()
+    else:
+        resume_text = (args.text or "").strip()
+
+    if not resume_text:
+        raise ValueError("Resume text is required. Use --text or --text-stdin.")
+
+    predict_role(Path(args.model), resume_text, top_k=args.top_k, json_output=args.json)
 
 
 if __name__ == "__main__":

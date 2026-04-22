@@ -3,6 +3,18 @@ export interface AtsScoreBreakdown {
   sectionCompleteness: number;
   impactMetrics: number;
   readability: number;
+  modelRoleAlignment?: number;
+}
+
+export interface AtsRoleProbability {
+  role: string;
+  probability: number;
+}
+
+export interface AtsModelPrediction {
+  predictedRole: string;
+  confidence: number;
+  topProbabilities: AtsRoleProbability[];
 }
 
 export interface AtsAnalysisResult {
@@ -11,6 +23,8 @@ export interface AtsAnalysisResult {
   matchedKeywords: string[];
   missingKeywords: string[];
   suggestions: string[];
+  missingSectionLines?: string[];
+  modelPrediction?: AtsModelPrediction;
 }
 
 export interface AtsAiFeedback {

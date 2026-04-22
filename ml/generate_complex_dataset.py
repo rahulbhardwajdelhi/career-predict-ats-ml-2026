@@ -81,6 +81,27 @@ METRICS = [
     "reduced cloud costs by {n}%",
 ]
 
+COMPANY_PREFIXES = [
+    "Nova",
+    "Apex",
+    "Vertex",
+    "BluePeak",
+    "Orbit",
+    "Prime",
+    "Nex",
+    "Quantum",
+]
+
+COMPANY_SUFFIXES = [
+    "Labs",
+    "Systems",
+    "Technologies",
+    "Solutions",
+    "Analytics",
+    "Digital",
+    "Works",
+]
+
 
 def build_resume_text(role: str, profile: dict, profiles: dict, rng: random.Random) -> str:
     domain = rng.choice(DOMAINS)
@@ -109,17 +130,97 @@ def build_resume_text(role: str, profile: dict, profiles: dict, rng: random.Rand
     return f"{summary} {body}"
 
 
+def build_job_description(role: str, profile: dict, rng: random.Random) -> tuple[str, list[str]]:
+    domain = rng.choice(DOMAINS)
+    must_have = rng.sample(profile["skills"], k=min(5, len(profile["skills"])))
+    preferred = rng.sample(profile["tools"], k=min(3, len(profile["tools"])))
+    responsibilities = rng.sample(profile["work"], k=min(3, len(profile["work"])))
+
+    jd_text = (
+        f"We are hiring a {role} for our {domain} platform. "
+        f"Required skills: {', '.join(must_have)}. "
+        f"Preferred tools: {', '.join(preferred)}. "
+        f"Responsibilities include {responsibilities[0]}, {responsibilities[1]}, and {responsibilities[2]}."
+    )
+
+    jd_keywords = list(dict.fromkeys([*must_have, *preferred]))
+    return jd_text, jd_keywords
+
+
+def build_resume_keywords(profile: dict, rng: random.Random) -> list[str]:
+    skills = rng.sample(profile["skills"], k=min(5, len(profile["skills"])))
+    tools = rng.sample(profile["tools"], k=min(2, len(profile["tools"])))
+    work_tokens = rng.sample(profile["work"], k=min(2, len(profile["work"])))
+    return list(dict.fromkeys([*skills, *tools, *work_tokens]))
+
+
+def synthesize_screening_outcome(
+    resume_keywords: list[str], jd_keywords: list[str], rng: random.Random
+) -> tuple[int, int]:
+    resume_set = {item.lower() for item in resume_keywords}
+    jd_set = {item.lower() for item in jd_keywords}
+
+    overlap = len(resume_set.intersection(jd_set))
+    jd_size = max(1, len(jd_set))
+    overlap_ratio = overlap / jd_size
+
+    # Convert overlap into a selection probability and inject slight noise.
+    selection_probability = min(0.97, max(0.08, 0.12 + 0.82 * overlap_ratio))
+    is_selected = 1 if rng.random() <= selection_probability else 0
+
+    if is_selected:
+        callbacks_from_company = rng.randint(1, 4)
+        if overlap_ratio >= 0.75 and rng.random() > 0.35:
+            callbacks_from_company += 1
+    else:
+        callbacks_from_company = 1 if rng.random() < 0.18 else 0
+
+    return is_selected, callbacks_from_company
+
+
+def generate_company_name(rng: random.Random) -> str:
+    return f"{rng.choice(COMPANY_PREFIXES)} {rng.choice(COMPANY_SUFFIXES)}"
+
+
 def generate_dataset(output_path: Path, samples_per_role: int, seed: int) -> None:
     rng = random.Random(seed)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with output_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["role", "resume_text"])
+        writer.writerow(
+            [
+                "role",
+                "company_name",
+                "job_description",
+                "resume_text",
+                "resume_keywords",
+                "is_selected",
+                "callbacks_from_company",
+            ]
+        )
 
         for role, profile in ROLE_PROFILES.items():
             for _ in range(samples_per_role):
-                writer.writerow([role, build_resume_text(role, profile, ROLE_PROFILES, rng)])
+                company_name = generate_company_name(rng)
+                resume_text = build_resume_text(role, profile, ROLE_PROFILES, rng)
+                job_description, jd_keywords = build_job_description(role, profile, rng)
+                resume_keywords = build_resume_keywords(profile, rng)
+                is_selected, callbacks_from_company = synthesize_screening_outcome(
+                    resume_keywords, jd_keywords, rng
+                )
+
+                writer.writerow(
+                    [
+                        role,
+                        company_name,
+                        job_description,
+                        resume_text,
+                        ", ".join(resume_keywords),
+                        is_selected,
+                        callbacks_from_company,
+                    ]
+                )
 
     total = samples_per_role * len(ROLE_PROFILES)
     print(f"Generated dataset: {output_path}")
