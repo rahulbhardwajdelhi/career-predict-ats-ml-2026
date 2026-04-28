@@ -217,6 +217,128 @@ export const AtsCheckerModal = ({ isOpen, onClose, resume }: AtsCheckerModalProp
                 </div>
               ) : null}
 
+              {analysis.modelPrediction?.jobMatch ? (
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900/30">
+                  <h3 className="font-semibold text-blue-violet-700 dark:text-blue-violet-300 mb-2">Job Match</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700 dark:text-gray-300 mb-3">
+                    <p>
+                      Similarity: <span className="font-semibold">{(analysis.modelPrediction.jobMatch.similarity_to_job_description * 100).toFixed(1)}%</span>
+                    </p>
+                    <p>
+                      Coverage: <span className="font-semibold">{(analysis.modelPrediction.jobMatch.coverage_ratio * 100).toFixed(1)}%</span>
+                    </p>
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <p className="font-medium text-gray-600 dark:text-gray-300 mb-1">Matched job skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.modelPrediction.jobMatch.matched_job_skills.length ? (
+                          analysis.modelPrediction.jobMatch.matched_job_skills.map((skill) => (
+                            <span key={skill} className="badge-success">{skill}</span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500">No strong skill overlap detected yet</span>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-600 dark:text-gray-300 mb-1">Missing job skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.modelPrediction.jobMatch.missing_job_skills.length ? (
+                          analysis.modelPrediction.jobMatch.missing_job_skills.map((skill) => (
+                            <span key={skill} className="badge-error">{skill}</span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500">No major gaps detected</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {analysis.modelPrediction?.topRankedRoles?.length ? (
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-violet-700 dark:text-blue-violet-300 mb-2">Role Ranking</h3>
+                  <div className="space-y-3">
+                    {analysis.modelPrediction.topRankedRoles.map((item, index) => (
+                      <div key={`${item.role}-${index}`} className="rounded-md border border-gray-200 dark:border-gray-700 p-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                          <p className="font-medium text-gray-800 dark:text-gray-100">{index + 1}. {item.role}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Hybrid score: <span className="font-semibold">{(item.hybrid_score * 100).toFixed(1)}%</span></p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm text-gray-600 dark:text-gray-300">
+                          <p>Lexical: {(item.lexical_probability * 100).toFixed(1)}%</p>
+                          <p>Semantic: {(item.semantic_role_similarity * 100).toFixed(1)}%</p>
+                          <p>Skill coverage: {(item.skill_coverage * 100).toFixed(1)}%</p>
+                        </div>
+                        {item.matched_role_skills.length ? (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {item.matched_role_skills.map((skill) => (
+                              <span key={skill} className="badge-success">{skill}</span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {analysis.modelPrediction?.explainability ? (
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-violet-700 dark:text-blue-violet-300 mb-2">Why This Role</h3>
+                  <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                    <div>
+                      <p className="font-medium text-gray-600 dark:text-gray-300 mb-1">Matched skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.modelPrediction.explainability.matched_skills.length ? (
+                          analysis.modelPrediction.explainability.matched_skills.map((skill) => (
+                            <span key={skill} className="badge-success">{skill}</span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500">No explicit core skills matched yet</span>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-600 dark:text-gray-300 mb-1">Missing core role skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.modelPrediction.explainability.missing_core_role_skills.length ? (
+                          analysis.modelPrediction.explainability.missing_core_role_skills.map((skill) => (
+                            <span key={skill} className="badge-error">{skill}</span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500">No missing skills to highlight</span>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-600 dark:text-gray-300 mb-1">Top lexical signals</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        {analysis.modelPrediction.explainability.top_lexical_signals.length ? (
+                          analysis.modelPrediction.explainability.top_lexical_signals.map((item) => (
+                            <li key={item.term}>{item.term}: {item.score.toFixed(4)}</li>
+                          ))
+                        ) : (
+                          <li className="list-none text-gray-500 pl-0">No lexical highlights available</li>
+                        )}
+                      </ul>
+                    </div>
+                    {analysis.modelPrediction.skillProfile?.detected_skills?.length ? (
+                      <div>
+                        <p className="font-medium text-gray-600 dark:text-gray-300 mb-1">Detected resume skills</p>
+                        <div className="flex flex-wrap gap-2">
+                          {analysis.modelPrediction.skillProfile.detected_skills.map((skill) => (
+                            <span key={skill} className="badge-success">{skill}</span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                   <h3 className="font-semibold text-green-700 dark:text-green-400 mb-2">Matched Keywords</h3>

@@ -1,12 +1,12 @@
-# Resume Role ML Pipeline (Python + scikit-learn)
+# Resume Role ML Pipeline (Hybrid NLP + scikit-learn)
 
 ## Files
 
 - `ml/data/sample_resumes.csv`: sample labeled training data
 - `ml/data/complex_resumes.csv`: generated complex training data
 - `ml/generate_complex_dataset.py`: creates large synthetic dataset
-- `ml/train_resume_role_model.py`: trains model
-- `ml/predict_resume_role.py`: predicts role from resume text
+- `ml/train_resume_role_model.py`: trains the hybrid model artifact
+- `ml/predict_resume_role.py`: predicts role from resume text with semantic ranking and explainability
 - `ml/models/resume_role_model.pkl`: generated trained model output
 
 ### Generated dataset columns
@@ -21,7 +21,7 @@
 - `is_selected` (0/1)
 - `callbacks_from_company` (integer)
 
-The training script remains compatible because it only requires `role` and `resume_text`.
+The training script remains compatible because it only requires `role` and `resume_text`, but it now builds a hybrid artifact that includes lexical, semantic, and skill-based scoring layers.
 
 ## Install
 
@@ -43,6 +43,28 @@ Then train:
 python ml/train_resume_role_model.py
 ```
 
+Train with user-inserted resume backups (if exported to `ml/data/mongodb_resumes.csv`):
+
+```bash
+python ml/train_resume_role_model.py --include-mongodb-backups
+```
+
+Train with explicit additional datasets:
+
+```bash
+python ml/train_resume_role_model.py --extra-data ml/data/mongodb_resumes.csv --extra-data ml/data/sample_resumes.csv
+```
+
+The current hybrid pipeline does not inject labels into features. Instead, it uses lexical tuning, semantic embeddings when available, and skill matching at inference time.
+
+Legacy compatibility flag:
+
+```bash
+python ml/train_resume_role_model.py --disable-role-priors
+```
+
+The flag is retained for older automation but no longer changes the model features.
+
 Optional custom paths:
 
 ```bash
@@ -53,6 +75,12 @@ python ml/train_resume_role_model.py --data ml/data/sample_resumes.csv --model-o
 
 ```bash
 python ml/predict_resume_role.py --text "Built React and TypeScript dashboards, integrated REST APIs, improved UI performance"
+```
+
+You can also pass a job description to get job-specific similarity and skill gaps:
+
+```bash
+python ml/predict_resume_role.py --text "Built React and TypeScript dashboards" --job-description "Frontend role with React, TypeScript, accessibility, and REST API integration"
 ```
 
 ## Where to paste AI key
@@ -109,6 +137,14 @@ curl -X POST http://localhost:3000/api/ml/predict-role \
 curl -X POST http://localhost:3000/api/ml/train-model \
 	-H "Content-Type: application/json" \
 	-d "{\"dataPath\":\"ml/data/complex_resumes.csv\",\"modelOut\":\"ml/models/resume_role_model.pkl\"}"
+```
+
+Train API with Mongo backup data and role priors:
+
+```bash
+curl -X POST http://localhost:3000/api/ml/train-model \
+	-H "Content-Type: application/json" \
+	-d "{\"dataPath\":\"ml/data/complex_resumes.csv\",\"includeMongoBackups\":true}"
 ```
 
 ### Build Dataset From MongoDB Backups

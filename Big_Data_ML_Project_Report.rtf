@@ -1,0 +1,222 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Times New Roman;}}
+\paperw12240\paperh15840\margl1440\margr1440\margt1440\margb1440
+\fs24
+\pard\qc\b\fs40 BIG DATA AND MACHINE LEARNING\par
+\pard\qc\b\fs32 FOR REAL-TIME CAREER PREDICTION AND ATS ANALYSIS\par
+\pard\qc\fs24\b0 Project Report\par
+\pard\qc Submitted in partial fulfillment of academic project requirements\par
+\pard\qc\par
+\pard\qc Prepared By: ____________________________\par
+\pard\qc Enrollment No.: ________________________\par
+\pard\qc Department: ____________________________\par
+\pard\qc Institution: ____________________________\par
+\pard\qc Academic Session: 2025-2026\par
+\page
+
+\pard\b\fs32 Certificate\par
+\pard\fs24\b0 This is to certify that the project titled "Big Data and Machine Learning for Real-Time Career Prediction and ATS Analysis" is a bonafide work carried out by the student(s) under our guidance and supervision. The work presented in this report is original and has not been submitted elsewhere for any other degree or diploma.\par
+\par
+Guide Name: ______________________\tab Signature: ______________________\par
+Head of Department: _______________\tab Signature: ______________________\par
+Date: _____________________________\par
+\page
+
+\pard\b\fs32 Declaration\par
+\pard\fs24\b0 I hereby declare that this project report entitled "Big Data and Machine Learning for Real-Time Career Prediction and ATS Analysis" is my original work and has been completed under faculty guidance. All references used in this report have been properly acknowledged. This work has not been submitted previously, in full or in part, for any degree, diploma, or equivalent award.\par
+\par
+Student Name: ______________________\par
+Signature: _________________________\par
+Date: _____________________________\par
+\page
+
+\pard\b\fs32 Abstract\par
+\pard\fs24\b0 The rapid expansion of digital hiring ecosystems has created a large-scale data challenge in resume processing, candidate-role mapping, and recruitment analytics. This project presents a unified architecture that combines Big Data concepts with Machine Learning to deliver real-time career role prediction and ATS (Applicant Tracking System) feedback analysis. The system is designed to process resume text data, extract relevant features, classify candidate profiles, and provide actionable guidance for resume improvement.\par
+\par
+The machine learning core uses Natural Language Processing through TF-IDF vectorization and logistic regression with cross-validated hyperparameter tuning. The pipeline is designed for reliability, reproducibility, and extensibility. To improve class-level role understanding, domain priors are incorporated by injecting role-specific skills into training representations. This improves semantic anchoring for sparse or short resume inputs.\par
+\par
+The platform also includes modular APIs for health checks, model training, role prediction, and ATS scoring, allowing integration with a modern web frontend. The overall system demonstrates how scalable data architecture, interpretable machine learning, and API-based deployment can be combined for real-world, high-impact career technology applications.\par
+\page
+
+\pard\b\fs32 Table of Contents\par
+\pard\fs24\b0
+S.No\tab Title\tab\tab\tab\tab\tab\tab Page No.\par
+1\tab Introduction\tab\tab\tab\tab\tab\tab 1\par
+2\tab Literature Review or Survey\tab\tab\tab\tab 2\par
+3\tab Methodology \u38? Work Description\tab\tab\tab 3\par
+4\tab Proposed Algorithm\tab\tab\tab\tab\tab 4\par
+5\tab Proposed Flowchart / DFD / Block Diagram\tab\tab 5\par
+6\tab Tools \u38? Technology Used\tab\tab\tab\tab 6\par
+7\tab Implementation \u38? Coding\tab\tab\tab\tab 7\par
+8\tab Result Analysis\tab\tab\tab\tab\tab 8\par
+9\tab Conclusion \u38? Future Scope\tab\tab\tab\tab 9\par
+10\tab References\tab\tab\tab\tab\tab\tab 10\par
+\par
+\pard\b\fs32 List of Figures\par
+\pard\fs24\b0 Fig\tab Description\tab\tab\tab\tab\tab\tab Page No.\par
+1\tab System Architecture of End-to-End Pipeline\tab\tab 5\par
+2\tab Data Ingestion and Preprocessing Flow\tab\tab\tab 5\par
+3\tab Model Training and Validation Workflow\tab\tab\tab 5\par
+4\tab API Inference Data Flow Diagram\tab\tab\tab\tab 6\par
+5\tab ATS Scoring and Feedback Generation Block Diagram\tab\tab 6\par
+6\tab Hyperparameter Optimization Process\tab\tab\tab\tab 7\par
+7\tab Deployment and Monitoring Lifecycle\tab\tab\tab\tab 8\par
+8\tab Future Spark-Based Distributed Expansion Model\tab\tab 9\par
+\page
+
+\pard\b\fs32 1. Introduction\par
+\pard\b\fs28 1.1 Background\par
+\pard\fs24\b0 In the last decade, data growth in recruitment ecosystems has become exponential. Every hiring cycle now generates vast amounts of unstructured resume data, job descriptions, skill requirements, and interview metadata. Traditional resume filtering methods cannot scale effectively in this environment due to manual effort, inconsistency, and low responsiveness. Big Data-driven systems and machine learning models solve this challenge by automating high-volume data processing and prediction tasks with measurable performance.\par
+\par
+\pard\b\fs28 1.2 Problem Statement\par
+\pard\fs24\b0 Current candidate screening methods are often keyword-dependent, static, and difficult to scale. Many ATS tools provide limited insight into why a resume is filtered out. The key problem is to build a robust architecture that can handle large resume datasets, predict the most suitable job role in near real time, and generate personalized feedback that improves ATS compatibility.\par
+\par
+\pard\b\fs28 1.3 Project Objectives\par
+\pard\fs24\b0 1. Build a scalable data pipeline for resume ingestion, cleansing, and storage.\par
+2. Train an NLP-based machine learning model for role classification.\par
+3. Integrate an ATS feedback module for practical resume enhancement guidance.\par
+4. Provide API-first deployment for frontend and external system integration.\par
+5. Ensure extensibility for distributed compute (e.g., Spark MLlib) in future versions.\par
+\page
+
+\pard\b\fs32 2. Literature Review or Survey\par
+\pard\b\fs28 2.1 Evolution of Big Data Systems\par
+\pard\fs24\b0 Big Data systems are typically characterized by the five Vs: Volume, Velocity, Variety, Veracity, and Value. Recruitment systems exhibit all five dimensions: millions of resumes (volume), continuous submissions (velocity), mixed formats including PDF and text (variety), noisy and inconsistent data (veracity), and decision-making utility (value). Modern pipelines therefore require distributed architectures, efficient indexing, and parallel processing.\par
+\par
+\pard\b\fs28 2.2 Machine Learning for Resume Classification\par
+\pard\fs24\b0 Resume role prediction is framed as a multiclass text classification task. Conventional approaches include Naive Bayes, SVM, and Logistic Regression using bag-of-words or TF-IDF features. Although deep transformer models offer richer semantics, linear models remain strong in production due to interpretability, lower training cost, and easier deployment.\par
+\par
+\pard\b\fs28 2.3 ATS Analysis Research Direction\par
+\pard\fs24\b0 ATS performance depends on lexical relevance, section completeness, measurable achievements, and role-specific keyword density. Studies indicate that combining rule-based checks with machine learning scoring provides better results than either approach alone. This project adopts this hybrid philosophy to provide both prediction and actionable correction feedback.\par
+\page
+
+\pard\b\fs32 3. Methodology \u38? Work Description\par
+\pard\b\fs28 3.1 Data Acquisition and Integration\par
+\pard\fs24\b0 The methodology starts by loading a validated base dataset and optionally merging additional backup datasets. Each source is schema-checked for required columns such as role and resume_text. Source-level traceability is retained for reproducibility. Duplicate role-text combinations are removed to reduce training bias and leakage.\par
+\par
+\pard\b\fs28 3.2 Data Cleaning and Feature Preparation\par
+\pard\fs24\b0 Resume text is normalized by trimming whitespace, handling inconsistencies, and preserving meaningful terms. Labels are standardized to avoid class fragmentation. Role skill priors are then injected as weighted anchors to strengthen signal for underrepresented classes and sparse resumes.\par
+\par
+\pard\b\fs28 3.3 Model Design and Optimization\par
+\pard\fs24\b0 A pipeline-based architecture is used: TF-IDF vectorizer plus Logistic Regression classifier. Training uses stratified split and Stratified K-Fold cross-validation to preserve class distribution. Hyperparameter tuning is performed through GridSearchCV with macro F1 objective, optimizing n-gram range, document frequency thresholds, regularization strength, and class weighting.\par
+\par
+\pard\b\fs28 3.4 Evaluation and Persistence\par
+\pard\fs24\b0 Best-performing parameters and model scores are logged. The trained model is serialized for inference and training metrics are saved in JSON for experiment history, reporting, and model governance.\par
+\page
+
+\pard\b\fs32 4. Proposed Algorithm\par
+\pard\b\fs28 4.1 Algorithmic Steps\par
+\pard\fs24\b0 Step 1: Load base and optional external datasets.\par
+Step 2: Validate mandatory schema and clean records.\par
+Step 3: Merge, normalize, and deduplicate dataset.\par
+Step 4: Inject role-skill priors (optional).\par
+Step 5: Split data into stratified train/test sets.\par
+Step 6: Build pipeline (TF-IDF + Logistic Regression).\par
+Step 7: Run GridSearchCV with f1_macro scoring and stratified folds.\par
+Step 8: Select best estimator and evaluate on validation set.\par
+Step 9: Export trained model and metrics artifacts.\par
+Step 10: Deploy model for API-driven real-time inference.\par
+\par
+\pard\b\fs28 4.2 High-Level Pseudocode\par
+\pard\fs24\b0 Input: Datasets D, optional backups B, config C\par
+Output: Model M, metrics R\par
+\par
+1. X = merge(load(D), load(B))\par
+2. X = clean(X); X = deduplicate(X)\par
+3. if C.role_priors_enabled then X = inject_role_priors(X)\par
+4. (X_train, X_test, y_train, y_test) = stratified_split(X)\par
+5. pipeline = TFIDF + LogisticRegression\par
+6. M = GridSearchCV(pipeline, param_grid, f1_macro).fit(X_train, y_train)\par
+7. y_pred = M.predict(X_test)\par
+8. R = evaluate(y_test, y_pred)\par
+9. save(M, R)\par
+10. return M, R\par
+\page
+
+\pard\b\fs32 5. Proposed Flowchart / DFD / Block Diagram\par
+\pard\b\fs28 5.1 Functional Flow Description\par
+\pard\fs24\b0 Resume Upload \u8594? Parsing Module \u8594? Text Preprocessing \u8594? Feature Engineering \u8594? Role Prediction \u8594? ATS Feedback Engine \u8594? User Dashboard/API Response\par
+\par
+\pard\b\fs28 5.2 Recommended Figures to Include\par
+\pard\fs24\b0 Figure 1: Overall multi-layer architecture (Frontend, API, ML, storage).\par
+Figure 2: Data ingestion and preprocessing flowchart.\par
+Figure 3: Training pipeline from dataset merge to model artifact.\par
+Figure 4: Inference DFD showing request/response cycle.\par
+Figure 5: ATS analysis rule-engine and scoring integration.\par
+Figure 6: Hyperparameter tuning and CV process map.\par
+Figure 7: Monitoring, metrics logging, and retraining trigger loop.\par
+Figure 8: Future Spark-based distributed processing architecture.\par
+\page
+
+\pard\b\fs32 6. Tools \u38? Technology Used\par
+\pard\b\fs28 6.1 Development Stack\par
+\pard\fs24\b0 1. Python: data preprocessing, ML training, evaluation.\par
+2. Pandas: data ingestion, cleaning, transformation.\par
+3. Scikit-learn: TF-IDF, classifier training, cross-validation, metrics.\par
+4. Next.js and React: UI layer and API route integration.\par
+5. TypeScript: type-safe frontend/backend application logic.\par
+\par
+\pard\b\fs28 6.2 Data and Artifact Management\par
+\pard\fs24\b0 1. CSV files for resume datasets and backup integration.\par
+2. PKL files for trained model persistence.\par
+3. JSON metrics for experiment tracking and reproducible reporting.\par
+\par
+\pard\b\fs28 6.3 Big Data Technology Direction\par
+\pard\fs24\b0 1. Apache Spark MLlib for distributed feature engineering and model training.\par
+2. Distributed storage for large-scale resume corpora.\par
+3. Stream ingestion for near real-time processing in production.\par
+\page
+
+\pard\b\fs32 7. Implementation \u38? Coding\par
+\pard\b\fs28 7.1 Implementation Architecture\par
+\pard\fs24\b0 The codebase is organized with separation of concerns: data layer, ML pipeline layer, API layer, and presentation layer. The model training module supports command-line options for data path, output path, backup ingestion, and role-prior control. This modularity enables controlled experiments and maintainable deployment cycles.\par
+\par
+\pard\b\fs28 7.2 Key Coding Components\par
+\pard\fs24\b0 1. Dataset loader with strict schema validation.\par
+2. Dataset merger with source traceability and deduplication.\par
+3. Prior injection utility for role-specific lexical reinforcement.\par
+4. Pipeline constructor for TF-IDF and Logistic Regression.\par
+5. Grid-search training and best-estimator extraction.\par
+6. Metrics exporter and model serializer for production use.\par
+\par
+\pard\b\fs28 7.3 API and Frontend Integration\par
+\pard\fs24\b0 The application includes API endpoints for model health checks, role prediction, ATS scoring, and dataset generation support. Frontend modules provide resume upload, modal-based insights, and user feedback forms, enabling a practical full-stack deployment path.\par
+\page
+
+\pard\b\fs32 8. Result Analysis\par
+\pard\b\fs28 8.1 Evaluation Criteria\par
+\pard\fs24\b0 The primary optimization target is macro F1 score, selected for fair multiclass evaluation. Additional indicators include validation accuracy, precision, recall, and class-wise F1. This combination provides both aggregate and granular understanding of model behavior.\par
+\par
+\pard\b\fs28 8.2 Observed Outcomes\par
+\pard\fs24\b0 1. Hyperparameter tuning consistently improves baseline model performance.\par
+2. Role-skill priors improve class anchoring for shorter resumes.\par
+3. Balanced weighting benefits minority class recall in imbalanced datasets.\par
+4. Input quality strongly affects prediction confidence and stability.\par
+\par
+\pard\b\fs28 8.3 Analytical Discussion\par
+\pard\fs24\b0 The model is computationally efficient and interpretable, making it suitable for practical ATS workflows. However, lexical methods may underperform on semantically complex profiles. Continuous retraining, data enrichment, and controlled monitoring are required to preserve reliability over time.\par
+\page
+
+\pard\b\fs32 9. Conclusion \u38? Future Scope\par
+\pard\b\fs28 9.1 Conclusion\par
+\pard\fs24\b0 This project successfully demonstrates an integrated Big Data and Machine Learning framework for career role prediction and ATS feedback. It addresses scalability, reproducibility, and practical deployment requirements while maintaining interpretable outputs. The architecture supports both academic demonstration and real-world extension.\par
+\par
+\pard\b\fs28 9.2 Future Scope\par
+\pard\fs24\b0 1. Spark MLlib integration for distributed training at enterprise scale.\par
+2. Transformer-based semantic modeling for deeper contextual classification.\par
+3. Active learning from recruiter feedback and hiring outcomes.\par
+4. Multilingual resume understanding and cross-domain skill ontology mapping.\par
+5. MLOps-ready monitoring, drift detection, and automated retraining pipelines.\par
+\page
+
+\pard\b\fs32 10. References\par
+\pard\fs24\b0 1. Han, J., Pei, J., and Kamber, M. Data Mining: Concepts and Techniques.\par
+2. Géron, A. Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow.\par
+3. Pedregosa, F. et al. Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research.\par
+4. Zaharia, M. et al. Apache Spark: A Unified Engine for Big Data Processing. Communications of the ACM.\par
+5. Manning, C., Raghavan, P., and Schutze, H. Introduction to Information Retrieval.\par
+6. Official documentation: Python, Pandas, Scikit-learn, Next.js, React, and TypeScript.\par
+
+\par
+\pard\qc --- End of Report ---\par
+}

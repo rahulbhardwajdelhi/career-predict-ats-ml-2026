@@ -3,10 +3,25 @@ import { runPythonScript } from "lib/ml/python-runner";
 
 export const runtime = "nodejs";
 
+const DEFAULT_ML_TIMEOUT_MS = 180_000;
+
+const resolveMlTimeout = (): number => {
+  const raw = process.env.ML_PYTHON_TIMEOUT_MS;
+  if (!raw) return DEFAULT_ML_TIMEOUT_MS;
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 15_000) {
+    return DEFAULT_ML_TIMEOUT_MS;
+  }
+
+  return Math.floor(parsed);
+};
+
 interface PredictRequest {
   resumeText?: string;
   modelPath?: string;
   topK?: number;
+  jobDescription?: string;
 }
 
 export async function POST(request: Request) {
@@ -23,12 +38,21 @@ export async function POST(request: Request) {
 
     const modelPath = body.modelPath?.trim() || "ml/models/resume_role_model.pkl";
     const topK = Number.isFinite(body.topK) ? Math.max(1, Number(body.topK)) : 3;
+    const timeoutMs = resolveMlTimeout();
 
     const result = await runPythonScript({
       scriptRelativePath: "ml/predict_resume_role.py",
-      args: ["--model", modelPath, "--text-stdin", "--json", "--top-k", String(topK)],
+      args: [
+        "--model",
+        modelPath,
+        "--text-stdin",
+        "--json",
+        "--top-k",
+        String(topK),
+        ...(body.jobDescription?.trim() ? ["--job-description", body.jobDescription.trim()] : []),
+      ],
       input: resumeText,
-      timeoutMs: 60_000,
+      timeoutMs,
     });
 
     if (result.exitCode !== 0) {

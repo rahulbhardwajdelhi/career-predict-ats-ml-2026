@@ -2,9 +2,29 @@ import { NextResponse } from "next/server";
 import { analyzeResumeForAts } from "lib/ats/score-resume";
 import type { Resume } from "lib/redux/types";
 import { runPythonScript } from "lib/ml/python-runner";
-import type { AtsAnalysisResult, AtsModelPrediction } from "lib/ats/types";
+import type {
+  AtsAnalysisResult,
+  AtsJobMatch,
+  AtsModelExplainability,
+  AtsModelPrediction,
+  AtsRankedRole,
+} from "lib/ats/types";
 
 export const runtime = "nodejs";
+
+const DEFAULT_ML_TIMEOUT_MS = 180_000;
+
+const resolveMlTimeout = (): number => {
+  const raw = process.env.ML_PYTHON_TIMEOUT_MS;
+  if (!raw) return DEFAULT_ML_TIMEOUT_MS;
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 15_000) {
+    return DEFAULT_ML_TIMEOUT_MS;
+  }
+
+  return Math.floor(parsed);
+};
 
 interface AtsScoreRequest {
   resume?: Resume;
@@ -16,6 +36,13 @@ interface RawPredictionResponse {
   predicted_role: string;
   confidence: number;
   top_probabilities: Array<{ role: string; probability: number }>;
+  top_ranked_roles?: AtsRankedRole[];
+  explainability?: AtsModelExplainability;
+  skill_profile?: {
+    detected_skills: string[];
+    normalized_tokens_preview: string[];
+  };
+  job_match?: AtsJobMatch | null;
 }
 
 const clamp = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
@@ -100,6 +127,11 @@ const computeModelRoleAlignment = (
 
   let alignment = modelPrediction.confidence * 100;
 
+  if (modelPrediction.jobMatch) {
+    const jobSimilarity = modelPrediction.jobMatch.similarity_to_job_description * 100;
+    alignment = alignment * 0.55 + jobSimilarity * 0.45;
+  }
+
   if (jdLower.includes(predictedRoleLower)) {
     alignment = Math.max(alignment, 92);
   } else if (titleMatch) {
@@ -128,12 +160,22 @@ export async function POST(request: Request) {
     const baseAnalysis = analyzeResumeForAts(resume, jobDescription);
     const modelPath = body.modelPath?.trim() || "ml/models/resume_role_model.pkl";
     const modelInputText = buildResumeTextForModel(resume);
+    const timeoutMs = resolveMlTimeout();
 
     const predictionResult = await runPythonScript({
       scriptRelativePath: "ml/predict_resume_role.py",
-      args: ["--model", modelPath, "--text-stdin", "--json", "--top-k", "3"],
+      args: [
+        "--model",
+        modelPath,
+        "--text-stdin",
+        "--json",
+        "--top-k",
+        "3",
+        "--job-description",
+        jobDescription,
+      ],
       input: modelInputText,
-      timeoutMs: 60_000,
+      timeoutMs,
     });
 
     if (predictionResult.exitCode !== 0) {
@@ -163,6 +205,10 @@ export async function POST(request: Request) {
       predictedRole: rawPrediction.predicted_role,
       confidence: rawPrediction.confidence,
       topProbabilities: rawPrediction.top_probabilities,
+      topRankedRoles: rawPrediction.top_ranked_roles,
+      explainability: rawPrediction.explainability,
+      skillProfile: rawPrediction.skill_profile,
+      jobMatch: rawPrediction.job_match,
     };
 
     const modelRoleAlignment = computeModelRoleAlignment(modelPrediction, jobDescription, resume);
